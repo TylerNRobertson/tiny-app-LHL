@@ -5,6 +5,12 @@
 </head>
 <header>
   <% include ../partials/_header.ejs %>
+  <% if (!user) { %>
+    <p>Please Login or register to see your shortened URLs</p>
+    <a href="register">Register</a>
+    <p>----------------------------</p>
+    <a href="/">Login</a>
+  <% } %>
 </header>
 <body>
   <% for (let id in urls){ %>
