@@ -7,22 +7,17 @@
   <% include ../partials/_header.ejs %>
 </header>
 <body>
-  <a href="urls_new.ejs"> Click here to Shorten a new URL!</a>
   <% for (let id in urls){ %>
-    <li><%= id %> - <%= urls[id] %></li>
-
   <table id="t01">
   <tr>
     <th>Short URL</th>
     <th>Long URL</th>
-    <th>Options</th>
   </tr>
   <tr>
     <td><a href="/urls/<%= id %>">http://localhost:8080/u/<%= id %></a></td>
     <td><a href="/urls/<%= id %>"><%= urls[id] %></a></td>
-    <td><form action="/urls/<%= id %>/delete" method="POST" align='right'><input type="submit" name="newURL" value='Delete'></form>
-      <button><a href="/urls/<%= id %>">Edit</a></button>
-    </td>
+    <td><form action="/urls/<%= id %>/delete" method="POST" align='right'><input type="submit" name="newURL" value='Delete' style="margin: 25px;"></form></td>
+    <td><button><a href="/urls/<%= id %>">Edit</a></button></td>
   </tr>
 </table>
   <% }; %>
