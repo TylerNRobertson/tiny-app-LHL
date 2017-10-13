@@ -6,11 +6,13 @@
 <header>
   <% include ../partials/_header.ejs %>
   <% if (!user) { %>
-    <p>Please Login or register to see your shortened URLs</p>
+    <p>Please Login or register to see your URL's</p>
     <a href="register">Register</a>
     <p>----------------------------</p>
-    <a href="/">Login</a>
+    <a href="login">Login</a>
   <% } %>
+  <% if (user) { %>
+  <a href="urls/new"> Click here to Shorten a new URL!</a>
 </header>
 <body>
   <% for (let id in urls){ %>
@@ -20,12 +22,13 @@
     <th>Long URL</th>
   </tr>
   <tr>
-    <td><a href="/urls/<%= id %>">http://localhost:8080/u/<%= id %></a></td>
-    <td><a href="/urls/<%= id %>"><%= urls[id] %></a></td>
+    <td><a href="/u/<%= id %>">http://localhost:8080/u/<%= id %></a></td>
+    <td><a href="/urls/<%= id %>"><%= urls[id]['longURL'] %></a></td>
     <td><form action="/urls/<%= id %>/delete" method="POST" align='right'><input type="submit" name="newURL" value='Delete' style="margin: 25px;"></form></td>
     <td><button><a href="/urls/<%= id %>">Edit</a></button></td>
   </tr>
 </table>
   <% }; %>
+  <% } %>
 </body>
 </html>

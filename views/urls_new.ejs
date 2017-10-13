@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head></head>
+  <header>
+    <% if (!user) { %>
+      <p>Please Login or register to create new shortened URLS</p>
+      <a href="register">Register</a>
+      <p>----------------------------</p>
+      <a href="login">Login</a>
+    <% } %>
+  </header>
+  <% if (user) { %>
   <body style="font-size:20px; padding:50px;">
     <% include ../partials/_header %>
     <form action="/urls" method="POST" style="margin:150px;">
@@ -10,4 +19,5 @@
     </form>
   </form>
   </body>
+  <% } %>
 </html>
