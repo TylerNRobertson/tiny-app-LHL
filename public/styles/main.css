@@ -1,0 +1,54 @@
+body {
+  background-color: #e8e4de;
+  font-family: 'Oswald', sans-serif;
+}
+div.header {
+  border-bottom-style: dotted;
+  border-bottom-width: 5px;
+  border-bottom-color: black;
+}
+
+/* Random Text fixes */
+
+h1.register {
+  text-align: center;
+}
+h1.headerTitle {
+  text-align: center;
+  color: #efb54a;
+  font-family: 'Oswald', sans-serif;
+  font-size: 70px;
+}
+p.slogan {
+  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 25px;
+  padding-bottom: 50px;
+}
+p.loginMess {
+  text-align: center;
+}
+p.userInfo {
+  text-align: right;
+}
+a.notify {
+  text-align: center;
+  padding-left: 670px;
+}
+
+/* Forms */
+
+form.logout {
+  float: right;
+}
+form.login {
+  text-align: center;
+  text-align: center;
+  margin-top: 25px;
+  font-family: 'Oswald', sans-serif;
+}
+form.register {
+  text-align: center;
+  margin-top: 25px;
+  font-family: 'Oswald', sans-serif;
+}

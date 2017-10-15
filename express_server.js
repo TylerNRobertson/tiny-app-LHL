@@ -1,14 +1,7 @@
+// -------------------------- Globals ------------------------------
 const express = require('express');
 
-const cookieParser = require('cookie-parser')
-
-const cookieSession = require('cookie-session')
-
-const bcrypt = require('bcrypt');
-
 const app = express();
-
-const methodOverride = require('method-override')
 
 const PORT = process.env.PORT || 8080; // default port 8080
 
@@ -16,7 +9,14 @@ app.set('view engine', 'ejs');
 
 const bodyParser = require('body-parser');
 
+app.use(express.static(__dirname + '/public'));
+
 app.use(bodyParser.urlencoded({extended: true}));
+
+// --------------- Handles Cookies and Password Encryption ---------------
+const cookieSession = require('cookie-session')
+
+const bcrypt = require('bcrypt');
 
 app.use(cookieSession({
   name: 'session',
@@ -24,7 +24,25 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }));
 
-// Object Database of short and their matching long URLS
+// --------------- Generate random small url ------------------------
+
+function generateRandomString() {
+  let text = '';
+  let charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  for( var i = 0; i < 5; i++ ) {
+    text += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return text;
+};
+
+// ---------------------- Generate Random User ID ---------------------
+
+function generateRandomNumber() {
+  let userID = Math.random();
+  return userID;
+}
+
+// --------------------- DataBases ----------------------------------------
 
 let urlDatabase = {
   'b2xVn2': {
@@ -39,31 +57,12 @@ let urlDatabase = {
   }
 };
 
-// users
-
 const users = {}
-
-// Generate random shortURL value
-function generateRandomString() {
-  let text = '';
-  let charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  for( var i = 0; i < 5; i++ ) {
-    text += charset.charAt(Math.floor(Math.random() * charset.length));
-  }
-  return text;
-};
-
-// Generate Random User ID
-function generateRandomNumber() {
-  let userID = Math.random();
-  return userID;
-}
 
 // -------------------- Routing Functions -------------------------
 
 // --------------------     Get Routes    -------------------------
 
-// Sending urlDatabase data within the urls key
 
 app.get('/urls', (req, res) => {
   let userURLS = {}
@@ -76,17 +75,33 @@ app.get('/urls', (req, res) => {
                         urls: userURLS,
                         user: users[req.session.user_Id]
                      };
+  if (req.session.user_Id == undefined) {
+    res.redirect('/login')
+  }
   res.render('urls_index', templateVars);
 });
 
-// Get the Long URL
+app.get('/', (req, res) => {
+  let templateVars = {
+    user: users[req.session.user_Id]
+  }
+  if (users[req.session.user_Id]) {
+    res.redirect('/urls')
+  }
+  res.render('login', templateVars)
+});
+
+// ------------------- Get Request for the LongURL Redirect --------------------------
 
 app.get('/u/:shortURL', (req, res) => {
+  if(!urlDatabase[req.params.shortURL]) {
+    res.status(404).send('Error: 404: Page not found. <a href="/urls"> Go Back </a>');
+  }
   let longURL = urlDatabase[req.params.shortURL].longURL
   res.redirect(longURL);
 });
 
-// Main get request form urls_new to create/add new shortened URLs
+// -------Main get request form urls_new to create/add new shortened URLs------
 
 app.get('/urls/new', (req, res) => {
   let templateVars = {
@@ -102,22 +117,41 @@ app.get('/urls/:id', (req, res) => {
                        longURL: urlDatabase[req.params.id]['longURL'],
                        user: users[req.session.user_Id]
                      };
+  if (!(urlDatabase[req.params.id])) {
+    res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
+    return;
+  }
+  if (req.session.user_Id !== urlDatabase[req.params.id]['user_Id']) {
+    res.status(400).end('You can only edit/delete your own URL')
+  }
   res.render('urls_show', templateVars);
 });
 
-// Registration
+// --------------------- Registration / Login Get Request --------------------
 
 app.get('/register', (req, res) => {
-  res.render('register');
+  let templateVars = {
+    user: users[req.session.user_Id]
+  }
+  if (req.session.user_Id) {
+    res.redirect('/urls')
+  }
+  res.render('register', templateVars);
 })
-// Login
 
 app.get('/login', (req, res) => {
-  res.render('login')
+  let templateVars = {
+    user: users[req.session.user_Id]
+  }
+  if (req.session.user_Id) {
+    res.redirect('/urls')
+  }
+  res.render('login', templateVars)
 })
-// --------------------    Post Routes    -------------------------
 
-// create short URL
+// --------------------    Post Requests    -------------------------
+
+// --------------------------- URL Create -----------------------------
 
 app.post('/urls', (req, res) => {
   shortURL = generateRandomString();
@@ -130,24 +164,31 @@ app.post('/urls', (req, res) => {
   res.redirect('/urls')
 });
 
-// URL Delete
+// ------------------------- URL Delete ------------------------------
 
 app.post('/urls/:id/delete', (req, res) => {
-if (urlDatabase[urls]['user_Id'] === req.session['user_Id']) {
+if (urlDatabase[req.params.id]['user_Id'] === req.session['user_Id']) {
   delete urlDatabase[req.params.id];
   res.redirect('/urls')
 }
-if (urlDatabase[urls]['user_Id'] === req.session['user_Id']) {
-  res.status(400).end('You can only edit/delete your own URL')
-}})
-// Change Long URL
+if (urlDatabase[req.params.id]['user_Id'] !== req.session['user_Id']) {
+  res.status(400).end('You can only edit/delete your own URL <a href="/urls">Go Back</a>')
+} if (!req.session.user_Id) {
+  res.status(400).end('You must be signed in to edit/delete URLs')
+}
+})
+
+//  ---------------------- Change Long URL ---------------------------
 
 app.post('/urls/:id', (req, res) => {
+  if (!req.session.user_Id) {
+    res.status(400).end('You must be signed in to edit/delete URLs')
+  }
   urlDatabase[req.params.id]['longURL'] = req.body.newURL
     res.redirect('/urls')
 });
 
-// Login cookie
+// --------------------------- Login cookie Creation --------------------
 
 app.post('/login', (req, res) => {
 for (let userKey in users) {
@@ -156,10 +197,10 @@ for (let userKey in users) {
     res.redirect('/urls')
   }
 }
-res.status(400).end('That email and/or password do not exist')
+res.status(400).end('Please make sure you use the correct password and email')
 })
 
-// Register
+// ---------------------------------- Registration -------------------------
 
 app.post('/register', (req, res) => {
   for (let userKey in users) {
@@ -176,7 +217,6 @@ app.post('/register', (req, res) => {
   if (req.body.password === '' && req.body.email === '') {
     res.status(400).end('Please include an email and password')
   }
-    // generates a new id and assigns it into database
     let newUserId = generateRandomNumber();
     users[newUserId] = {
       id: newUserId,
@@ -187,11 +227,11 @@ app.post('/register', (req, res) => {
     res.redirect('/urls');
   });
 
-// Logout
+// ----------------------- Logout -----------------------------
 
 app.post('/logout', (req, res) => {
-  req.session['user_Id'] = null;
-  res.redirect('login');
+  req.session = null;
+  res.redirect('/urls');
 });
 
 // Telling the app to listen to the defined port and only that port

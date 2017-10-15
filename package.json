@@ -1,0 +1,28 @@
+{
+  "name": "usingexpress",
+  "version": "1.0.0",
+  "description": "Tiny app for LHL",
+  "main": "express_server.js",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "cookie-session": "^2.0.0-beta.3",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "method-override": "^2.3.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TylerNRobertson/tiny-app-LHL.git"
+  },
+  "author": "Tyler Robertson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TylerNRobertson/tiny-app-LHL/issues"
+  },
+  "homepage": "https://github.com/TylerNRobertson/tiny-app-LHL#readme"
+}

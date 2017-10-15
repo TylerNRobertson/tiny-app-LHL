@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TinyApp</title>
+  <meta charset="utf-8">
+  <!-- My CSS -->
+  <link type='text/css' rel='stylesheet' href='/styles/main.css'>
+  <!-- My Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  <title>TinyApp - <%= shortURL  %> </title>
 </head>
 <header>
   <% include ../partials/_header.ejs %>
 </header>
 <body>
+  <% if (!user) { %>
+    <p class="loginMess">Please Login or register to see your URL's</p>
+    <a href="register" class="notify">Register</a></br>
+    <a href="login" class="notify">Login</a>
+  <% } %>
+  <% if (user) { %>
   <h3>ShortURL: <%= shortURL %></h3>
   <form action="/urls/<%= shortURL  %>" method="POST">
     <input type="text" name="newURL" value="<%= longURL %>" style="width: 25%;">
     <input type="submit" value="Update">
   </form>
+  <% } %>
 </body>
 </html>

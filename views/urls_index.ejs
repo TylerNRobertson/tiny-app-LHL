@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TinyApp</title>
+  <meta charset="utf-8">
+  <!-- My CSS -->
+  <link type='text/css' rel='stylesheet' href='/styles/main.css'>
+  <!-- My Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  <title>TinyApp - My URLs</title>
 </head>
 <header>
   <% include ../partials/_header.ejs %>
-  <% if (!user) { %>
-    <p>Please Login or register to see your URL's</p>
-    <a href="register">Register</a>
-    <p>----------------------------</p>
-    <a href="login">Login</a>
-  <% } %>
-  <% if (user) { %>
-  <a href="urls/new"> Click here to Shorten a new URL!</a>
 </header>
-<body>
-  <% for (let id in urls){ %>
-  <table id="t01">
-  <tr>
-    <th>Short URL</th>
-    <th>Long URL</th>
-  </tr>
-  <tr>
-    <td><a href="/u/<%= id %>">http://localhost:8080/u/<%= id %></a></td>
-    <td><a href="/urls/<%= id %>"><%= urls[id]['longURL'] %></a></td>
-    <td><form action="/urls/<%= id %>/delete" method="POST" align='right'><input type="submit" name="newURL" value='Delete' style="margin: 25px;"></form></td>
-    <td><button><a href="/urls/<%= id %>">Edit</a></button></td>
-  </tr>
-</table>
-  <% }; %>
+    <body>
+      <% if (!user) { %>
+        <p style="text-align: center;">Make sure you are logged in to see your personal URL's!</p>
+        <p style="text-align: center; font-size: 25px;"><a href="/login">Login</a></p>
+        <% } %>
+      <% if (user) { %>
+      <p class="slogan"><a href="urls/new">Click to shorten a URL</a></p>
+      <table>
+        <tr>
+          <th style='padding-left: 5%'>Short URL</th>
+          <th style='padding-left: 5%'>Long URL</th>
+        </tr>
+        <% for (let id in urls){ %>
+        <tr>
+          <td style='padding-left: 1%'><a href="/u/<%= id %>">http://localhost:8080/u/<%= id %></a></td>
+          <td style='padding-left: 5%'><a href="/urls/<%= id %>"><%= urls[id]['longURL'] %></a></td>
+          <td style='padding-left: 10%'><form action="/urls/<%= id %>/delete" method="POST" align='right'><input type="submit" name="newURL" value='Delete'></form></td>
+          <td style='padding-left: 10%'><button><a href="/urls/<%= id %>">Edit</a></button></td>
+        </tr>
+      </table>
+      <% }; %>
+    </body>
   <% } %>
-</body>
 </html>

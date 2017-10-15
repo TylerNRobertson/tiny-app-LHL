@@ -1,5 +1,21 @@
-<form action="/register" method="POST">
-  <input type="email" placeholder="email" name="email">
-  <input type="password" placeholder="password" name="password">
-  <input type="submit" value="Register">
-</form>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link type='text/css' rel='stylesheet' href='/styles/main.css'>
+    <title>TinyApp - Register</title>
+  </head>
+  <header>
+    <% include ../partials/_header.ejs %>
+  </header>
+<!-- Register form -->
+  <body>
+    <h1 class="register">Sign Up</h1>
+    <form action="/register" method="POST" class="register">
+      <input type="email" placeholder="email" name="email">
+      <input type="password" placeholder="password" name="password">
+      <input type="submit" value="Register">
+    </form>
+    <p style="text-align: center;">Already a member? <a href="/login">Login Here</a></p>
+  </body>
+</html>
